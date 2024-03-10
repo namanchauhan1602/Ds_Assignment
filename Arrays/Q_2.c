@@ -60,41 +60,41 @@ struct SparseMatrix *transpose(struct SparseMatrix *matrix)
     return transposed_matrix;
 }
 
-struct SparseMatrix *add(struct SparseMatrix *matrix1, struct SparseMatrix *matrix2)
+void add(struct SparseMatrix *matrix1, struct SparseMatrix *matrix2)
 {
     if (matrix1->rows != matrix2->rows || matrix1->cols != matrix2->cols)
     {
         printf("Matrices must have the same dimensions for addition.\n");
-        return NULL;
+        return;
     }
 
-    struct SparseMatrix *result_matrix = createSparseMatrix(matrix1->rows, matrix1->cols, matrix1->num_elements + matrix2->num_elements);
-    int i, j, k = 0;
-    for (i = 0; i < matrix1->rows; i++)
+    int i, j, k1 = 0, k2 = 0;
+    for (i = 1; i <= matrix1->rows; i++)
     {
-        for (j = 0; j < matrix1->cols; j++)
+        for (j = 1; j <= matrix1->cols; j++)
         {
             int value1 = 0, value2 = 0;
-            if (k < matrix1->num_elements && matrix1->elements[k].row == i && matrix1->elements[k].col == j)
+            if (k1 < matrix1->num_elements && matrix1->elements[k1].row == i && matrix1->elements[k1].col == j)
             {
-                value1 = matrix1->elements[k].value;
-                k++;
+                value1 = matrix1->elements[k1].value;
+                k1++;
             }
-            if (k < matrix2->num_elements && matrix2->elements[k].row == i && matrix2->elements[k].col == j)
+            if (k2 < matrix2->num_elements && matrix2->elements[k2].row == i && matrix2->elements[k2].col == j)
             {
-                value2 = matrix2->elements[k].value;
-                k++;
+                value2 = matrix2->elements[k2].value;
+                k2++;
             }
             if (value1 + value2 != 0)
             {
-                result_matrix->elements[result_matrix->num_elements].row = i;
-                result_matrix->elements[result_matrix->num_elements].col = j;
-                result_matrix->elements[result_matrix->num_elements].value = value1 + value2;
-                result_matrix->num_elements++;
+                printf("%d ", value1 + value2);
+            }
+            else
+            {
+                printf("0 ");
             }
         }
+        printf("\n");
     }
-    return result_matrix;
 }
 
 struct SparseMatrix *multiply(struct SparseMatrix *matrix1, struct SparseMatrix *matrix2)
@@ -105,14 +105,13 @@ struct SparseMatrix *multiply(struct SparseMatrix *matrix1, struct SparseMatrix 
         return NULL;
     }
 
-    struct SparseMatrix *result_matrix = createSparseMatrix(matrix1->rows, matrix2->cols, 0);
     int i, j, k;
-    for (i = 0; i < matrix1->rows; i++)
+    for (i = 1; i <= matrix1->rows; i++)
     {
-        for (j = 0; j < matrix2->cols; j++)
+        for (j = 1; j <= matrix2->cols; j++)
         {
             int sum = 0;
-            for (k = 0; k < matrix1->cols; k++)
+            for (k = 1; k <= matrix1->cols; k++)
             {
                 int value1 = 0, value2 = 0;
                 for (int l = 0; l < matrix1->num_elements; l++)
@@ -135,14 +134,15 @@ struct SparseMatrix *multiply(struct SparseMatrix *matrix1, struct SparseMatrix 
             }
             if (sum != 0)
             {
-                result_matrix->elements[result_matrix->num_elements].row = i;
-                result_matrix->elements[result_matrix->num_elements].col = j;
-                result_matrix->elements[result_matrix->num_elements].value = sum;
-                result_matrix->num_elements++;
+                printf("%d ", sum);
+            }
+            else
+            {
+                printf("0 ");
             }
         }
+        printf("\n");
     }
-    return result_matrix;
 }
 
 int main()
@@ -194,26 +194,17 @@ int main()
             displaySparseMatrix(result_matrix);
             break;
         case 2:
-            result_matrix = add(matrix1, matrix2);
-            if (result_matrix != NULL)
-            {
-                printf("\nAddition of the two matrices:\n");
-                displaySparseMatrix(result_matrix);
-            }
+            printf("\nAddition of the two matrices:\n");
+            add(matrix1, matrix2);
             break;
         case 3:
-            result_matrix = multiply(matrix1, matrix2);
-            if (result_matrix != NULL)
-            {
-                printf("\nMultiplication of the two matrices:\n");
-                displaySparseMatrix(result_matrix);
-            }
+            printf("\nMultiplication of the two matrices:\n");
+            multiply(matrix1, matrix2);
             break;
         case 4:
             return 0;
         default:
             printf("Invalid choice!\n");
-            ;
             break;
         }
     }
